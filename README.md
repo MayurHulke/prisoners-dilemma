@@ -1,4 +1,6 @@
-# Game Theory Arcade
+# 🎮  Game Theory Arcade 
+
+**[🎮  Play Now →](https://mayurhulke.github.io/game-theory-arcade/)**
 
 **Learn game theory through interactive play!**
 
@@ -53,6 +55,14 @@ Contribute to the public fund or free-ride? See why Wikipedia needs donation dri
 - 6 player archetypes (Altruist → Total Free-Rider)
 - Real-world applications: Wikipedia, PBS, climate action
 
+## Features
+
+- **Retro Arcade Aesthetic** - Pixel fonts, CRT effects, neon glows
+- **Real Human Data** - Compare your choices to actual players
+- **Interactive Insights** - Charts showing cooperation patterns
+- **Social Comparison** - Percentiles, rankings, and archetypes
+- **Firebase Integration** - Live crowd statistics (free tier)
+
 ## Purpose
 
 **Why This Project Exists:**
@@ -82,10 +92,6 @@ Understanding these patterns isn't just academic - it explains why international
 - Anyone curious about why humans make seemingly irrational decisions
 - People who want to understand cooperation, fairness, and collective action problems
 - Educators teaching decision-making, economics, or social dilemmas
-
-## Play Now
-
-👉 **https://mayurhulke.github.io/game-theory-arcade/**
 
 
 ## License
