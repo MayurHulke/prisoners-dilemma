@@ -53,42 +53,6 @@ Contribute to the public fund or free-ride? See why Wikipedia needs donation dri
 - 6 player archetypes (Altruist → Total Free-Rider)
 - Real-world applications: Wikipedia, PBS, climate action
 
-## Features
-
-- **Retro Arcade Aesthetic** - Pixel fonts, CRT effects, neon glows
-- **Real Human Data** - Compare your choices to actual players
-- **Interactive Insights** - Charts showing cooperation patterns
-- **Social Comparison** - Percentiles, rankings, and archetypes
-- **Firebase Integration** - Live crowd statistics (free tier)
-
-## Structure
-
-```
-games/
-├── index.html                 # Games hub (landing page)
-├── hub-style.css              # Hub styling
-├── shared/
-│   └── firebase-config.js     # Shared Firebase config
-├── prisoners-dilemma/
-│   ├── index.html
-│   ├── style.css
-│   ├── game.js
-│   └── images/
-├── ultimatum-game/
-│   ├── index.html
-│   ├── style.css
-│   └── game.js
-├── tragedy-commons/
-│   ├── index.html
-│   ├── style.css
-│   └── game.js
-├── public-goods/
-│   ├── index.html
-│   ├── style.css
-│   └── game.js
-└── README.md
-```
-
 ## Purpose
 
 **Why This Project Exists:**
