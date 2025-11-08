@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prisoner's Dilemma - Trust or Betray?</title>
+    <meta name="description" content="Play the classic Prisoner's Dilemma game and see how you compare to thousands of players. Are you more trusting or selfish than the average person? Find out now!">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 The Prisoner's Dilemma Game</h1>
+            <p class="subtitle">Trust or Betray? See how you compare to everyone else!</p>
+            <div class="player-count">
+                <span class="pulse-dot"></span>
+                <span id="total-players">Loading...</span> people have played
+            </div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="card welcome-card">
+                <h2>How To Play</h2>
+
+                <div class="scenario-box">
+                    <h3>The Classic Dilemma</h3>
+                    <p>You and a partner in crime got caught! The police separate you and offer each the same deal:</p>
+                    <ul class="scenario-list">
+                        <li><strong>Both stay silent:</strong> 1 year in prison each ⚖️</li>
+                        <li><strong>You betray, partner stays silent:</strong> You go FREE, partner gets 20 years 😈</li>
+                        <li><strong>Both betray:</strong> 5 years each 🔒</li>
+                    </ul>
+                    <p class="highlight">💭 Do you trust your partner, or play it safe?</p>
+                </div>
+
+                <div class="diagram-box">
+                    <img src="images/game.png" alt="Prisoner's Dilemma Payoff Matrix" class="payoff-diagram">
+                </div>
+
+                <div class="theory-box">
+                    <h3>The Twist</h3>
+                    <p>You'll play <strong>10 rounds</strong> with different partners. After each choice, you'll see what <strong>thousands of real players</strong> decided in the same situation!</p>
+                    <p class="challenge">Are you more trusting or selfish than the average person? Let's find out! 🎯</p>
+                </div>
+
+                <div class="theory-box">
+                    <h3>How This Works</h3>
+                    <p>🤖 You play against AI opponents that use real behavioral strategies from game theory research.</p>
+                    <p>📊 Your cooperation rate is compared to thousands of real players who've played before you.</p>
+                    <p>🧪 The AI uses strategies like Tit-for-Tat, Always Defect, and Random - proven optimal strategies from computer tournaments!</p>
+                </div>
+
+                <div class="theory-box nerd-section">
+                    <h3>Why This Game Matters</h3>
+
+                    <p><strong>Picture this real scenario:</strong> During the Cold War, the US and Soviet Union each had a choice - spend billions on nuclear weapons, or disarm and spend that money on their citizens. If both disarmed, everyone wins. But if one disarms while the other builds weapons, the armed country dominates. So both built massive arsenals, even though both would've been better off if neither had. Sound familiar? That's this game.</p>
+
+                    <p><strong>Here's the trap:</strong> Logic says you should always betray. Why? If your partner cooperates, betraying gets you 0 years (freedom!) instead of 1 year. If your partner betrays, you still get 5 years instead of 20. Betraying is better no matter what they do. But here's the problem - they're thinking the same thing! So you both betray and get 5 years, when you could've both cooperated for just 1 year. You're both worse off by being "rational."</p>
+
+                    <p><strong>This explains so much:</strong> Why companies in a price war all lose money (cooperate = keep prices high, betray = undercut). Why overfishing destroys fishing industries (cooperate = sustainable catch, betray = overfish). Why doping scandals plague sports (cooperate = stay clean, betray = use steroids). Why climate change is hard to solve (cooperate = cut emissions, betray = pollute for growth). Everyone acting in self-interest creates disaster for everyone.</p>
+
+                    <p><strong>But here's what's fascinating:</strong> In 1980, a professor named Robert Axelrod asked: what if you play repeatedly? He ran a computer tournament where different strategies competed. Complex strategies, simple strategies, aggressive strategies. The winner? "Tit-for-Tat" - just cooperate first, then copy whatever your opponent did last time. It's stupidly simple but unbeatable. Be nice, be forgiving, but don't be a pushover.</p>
+
+                    <p><strong>Why you cooperate in real life:</strong> Think about your favorite local restaurant. You could skip the tip (betray) and save money. But you go back there - it's repeated, not one-time. So you tip (cooperate) because you want good service next time. This is why small towns have more trust than big cities - in small towns, you'll see that person again. Reputation matters when interactions repeat.</p>
+
+                    <p><strong>The modern world gets it:</strong> eBay invented seller ratings (reputation system). LinkedIn tracks your network (repeated interactions). Yelp publishes reviews (making defection visible). Credit scores track financial behavior (enabling punishment of defectors). International trade deals work because countries interact repeatedly. These aren't random - they're all solutions to the Prisoner's Dilemma!</p>
+
+                    <p><strong>What this reveals about humanity:</strong> Pure logic says always defect. But in experiments, humans cooperate about 50% of the time, even with strangers they'll never see again. We're not cold rational calculators - we have evolved instincts for cooperation, guilt, reciprocity, and fairness. That's not a bug, it's a feature. It's why human civilization exists.</p>
+                </div>
+
+                <div class="input-section">
+                    <label for="player-name">Enter a nickname (optional):</label>
+                    <input type="text" id="player-name" placeholder="Anonymous" maxlength="20">
+                </div>
+
+                <button id="start-game-btn" class="btn btn-primary btn-large">
+                    Start Playing
+                </button>
+
+                <div class="live-stats-preview">
+                    <h4>Live Global Stats:</h4>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-coop-rate">...</div>
+                            <div class="mini-stat-label">Average Cooperation Rate</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-r1-coop">...</div>
+                            <div class="mini-stat-label">Round 1 Cooperation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen" style="display: none;">
+            <div class="game-layout">
+                <!-- Left Panel: Current Round -->
+                <div class="left-panel">
+                    <div class="card game-card">
+                        <div class="round-header">
+                            <h2>Round <span id="round-number">1</span> of 10</h2>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill" style="width: 10%"></div>
+                            </div>
+                        </div>
+
+                        <div class="decision-area">
+                            <h3>What do you choose?</h3>
+                            <p class="reminder">Remember: Your partner doesn't know what you'll choose.</p>
+
+                            <div class="choice-buttons">
+                                <button id="cooperate-btn" class="btn btn-choice btn-cooperate">
+                                    <div class="choice-icon">🤝</div>
+                                    <div class="choice-title">Stay Silent</div>
+                                    <div class="choice-subtitle">Cooperate</div>
+                                </button>
+                                <button id="defect-btn" class="btn btn-choice btn-defect">
+                                    <div class="choice-icon">🔪</div>
+                                    <div class="choice-title">Betray Partner</div>
+                                    <div class="choice-subtitle">Defect</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="round-result" class="round-result" style="display: none;">
+                            <h4>Round Outcome</h4>
+                            <div class="outcome-display">
+                                <div class="choice-reveal">
+                                    <span class="you-label">You:</span>
+                                    <span id="your-choice" class="choice-badge"></span>
+                                </div>
+                                <div class="choice-reveal">
+                                    <span class="you-label">Partner:</span>
+                                    <span id="partner-choice" class="choice-badge"></span>
+                                </div>
+                            </div>
+                            <div class="sentence-result">
+                                <div class="years">You got <span id="your-years" class="years-number">0</span> years</div>
+                            </div>
+                            <button id="next-round-btn" class="btn btn-primary">Next Round</button>
+                        </div>
+                    </div>
+
+                    <div class="card crowd-comparison">
+                        <h3>What Others Chose (This Round)</h3>
+                        <div class="crowd-stats">
+                            <div class="crowd-stat cooperate">
+                                <div class="crowd-percentage" id="crowd-coop-pct">...</div>
+                                <div class="crowd-label">Cooperated</div>
+                            </div>
+                            <div class="crowd-stat defect">
+                                <div class="crowd-percentage" id="crowd-defect-pct">...</div>
+                                <div class="crowd-label">Defected</div>
+                            </div>
+                        </div>
+                        <div class="crowd-bar">
+                            <div id="crowd-coop-bar" class="crowd-bar-fill cooperate" style="width: 50%"></div>
+                        </div>
+                        <p class="crowd-insight" id="round-insight"></p>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Your Stats -->
+                <div class="right-panel">
+                    <div class="card your-stats">
+                        <h3>Your Statistics</h3>
+                        <div class="stat-grid">
+                            <div class="stat-box">
+                                <div class="stat-label">Total Prison Time</div>
+                                <div class="stat-value" id="total-years">0 years</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Cooperation Rate</div>
+                                <div class="stat-value" id="your-coop-rate">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card history-chart">
+                        <h3>Your Choices</h3>
+                        <div class="choice-history" id="choice-history"></div>
+                    </div>
+
+                    <div class="card payoff-reference">
+                        <h3>Payoff Matrix</h3>
+                        <table class="payoff-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Partner Cooperates</th>
+                                    <th>Partner Defects</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>You Cooperate</th>
+                                    <td class="cooperate-cooperate">1yr / 1yr</td>
+                                    <td class="cooperate-defect">20yr / 0yr</td>
+                                </tr>
+                                <tr>
+                                    <th>You Defect</th>
+                                    <td class="defect-cooperate">0yr / 20yr</td>
+                                    <td class="defect-defect">5yr / 5yr</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="results-screen" style="display: none;">
+            <div class="card results-card">
+                <h2>🎯 Your Results Are In!</h2>
+
+                <div class="final-score">
+                    <div class="score-item">
+                        <div class="score-label">Total Prison Time</div>
+                        <div class="score-value" id="final-years">0 years</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Your Cooperation Rate</div>
+                        <div class="score-value" id="final-coop-rate">0%</div>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <h3>How You Compare to <span id="comparison-count">Everyone</span></h3>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <div class="comparison-title">Cooperation</div>
+                            <div class="comparison-percentile" id="coop-percentile">...</div>
+                            <div class="comparison-desc" id="coop-desc">...</div>
+                            <div class="percentile-bar">
+                                <div id="coop-bar-fill" class="percentile-fill"></div>
+                                <div class="percentile-marker">You</div>
+                            </div>
+                        </div>
+
+                        <div class="comparison-card">
+                            <div class="comparison-title">Prison Time</div>
+                            <div class="comparison-percentile" id="time-percentile">...</div>
+                            <div class="comparison-desc" id="time-desc">...</div>
+                            <div class="percentile-bar">
+                                <div id="time-bar-fill" class="percentile-fill"></div>
+                                <div class="percentile-marker">You</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="archetype-section">
+                    <h3>Your Behavioral Archetype</h3>
+                    <div id="archetype-card" class="archetype-display">
+                        <div class="archetype-icon" id="archetype-icon">🎭</div>
+                        <div class="archetype-name" id="archetype-name">Calculating...</div>
+                        <div class="archetype-description" id="archetype-desc">...</div>
+                        <div class="archetype-prevalence" id="archetype-prevalence">...</div>
+                    </div>
+                </div>
+
+                <div class="insights-section">
+                    <h3>📊 Collective Human Behavior Insights</h3>
+                    <div class="insights-grid" id="insights-grid">
+                        <!-- Dynamic insights will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="evolution-chart-section">
+                    <h3>How Trust Evolved</h3>
+                    <p class="chart-description">Cooperation rates across all rounds (everyone vs you)</p>
+                    <div class="chart-container">
+                        <canvas id="evolutionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="play-again-btn" class="btn btn-primary btn-large">Play Again</button>
+                    <button id="share-btn" class="btn btn-secondary btn-large">Share Your Results</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="card footer-card">
+                <h3>About This Game</h3>
+                <p>The Prisoner's Dilemma is a famous game theory puzzle: if everyone acts selfishly, we all end up worse off. Logic says you should always betray - but most humans don't! This game shows you how real people play and where you fit in. Are you a trusting soul or a strategic thinker?</p>
+                <div class="footer-links">
+                    <a href="https://en.wikipedia.org/wiki/Prisoner%27s_dilemma" target="_blank">Learn More About Game Theory</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="../shared/firebase-config.js"></script>
+    <script type="module" src="game.js"></script>
+</body>
+</html>

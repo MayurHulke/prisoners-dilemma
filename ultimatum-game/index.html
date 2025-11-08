@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimatum Game - Fair or Greedy?</title>
+    <meta name="description" content="Split $10 with a stranger. How fair will you be? How much unfairness will you tolerate? Compare your choices to thousands of players.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 The Ultimatum Game</h1>
+            <p class="subtitle">Fair or Greedy? Test your sense of fairness!</p>
+            <div class="player-count">
+                <span class="pulse-dot"></span>
+                <span id="total-players">Loading...</span> people have played
+            </div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="card welcome-card">
+                <h2>How To Play</h2>
+
+                <div class="scenario-box">
+                    <h3>The Setup</h3>
+                    <p>You have <strong>$10</strong> to split between you and a stranger. But there's a catch!</p>
+
+                    <div class="rules-list">
+                        <div class="rule-item">
+                            <span class="rule-icon">💵</span>
+                            <div class="rule-text">
+                                <strong>As Proposer:</strong> You offer how much the other person gets ($0-$10)
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">✅</span>
+                            <div class="rule-text">
+                                <strong>As Responder:</strong> Accept or reject the offer
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">⚠️</span>
+                            <div class="rule-text">
+                                <strong>The Catch:</strong> If rejected, both get $0!
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="highlight">🤔 How much will you offer? How little will you accept?</p>
+                </div>
+
+                <div class="theory-box">
+                    <h3>The Theory</h3>
+                    <p>Game theory says: offer $1, accept anything above $0 (rational self-interest).</p>
+                    <p class="challenge">But real humans care about fairness! Play 5 rounds and see how you compare! 📊</p>
+                </div>
+
+                <div class="theory-box">
+                    <h3>How This Works</h3>
+                    <p>🤖 You play against AI opponents modeled on real human behavior from decades of research.</p>
+                    <p>📊 Your decisions are compared to thousands of real players who've played before you.</p>
+                    <p>🧪 The AI rejection rates (~70% reject offers below $3) match actual experimental data!</p>
+                </div>
+
+                <div class="theory-box nerd-section">
+                    <h3>Why This Game Matters</h3>
+
+                    <p><strong>Imagine this:</strong> Your boss offers you a $1,000 bonus but gives your coworker $9,000 for the same work. Do you take the $1,000? Logic says yes - free money is free money. But you'd probably quit instead, even though walking away means getting $0. Why do we do this?</p>
+
+                    <p><strong>Here's the puzzle:</strong> Economics textbooks say people are rational and maximize their income. So in this game, you should offer $1 (why give more?) and accept any offer above $0 (something beats nothing). But when researchers ran this experiment in dozens of countries, something shocking happened - most people offered $5 (a 50-50 split), and about 70% of people rejected offers below $3. We literally chose to get nothing rather than accept "unfair" deals.</p>
+
+                    <p><strong>Why it matters in real life:</strong> This explains why lowball job offers backfire even when unemployment is high. Why "take it or leave it" ultimatums in negotiations often blow up. Why tipping exists even though you'll never see that server again. Why people support minimum wage laws that economists say are "irrational." We're not cold calculating machines - we're humans who care about fairness, even when it costs us.</p>
+
+                    <p><strong>The business world gets this:</strong> Amazon faced massive backlash when warehouse workers saw executives making 1000x their salary. The company wasn't breaking any laws - they were breaking our evolved sense of fairness. Smart companies know that perceived fairness drives productivity, loyalty, and retention more than absolute compensation levels.</p>
+
+                    <p><strong>What makes it fascinating:</strong> This preference for fairness appears across all cultures, but the threshold varies. Americans might accept a 30-70 split, while some cultures reject anything less than 40-60. This suggests our fairness instincts are partly hardwired (evolved) and partly learned (cultural). We're not purely rational economic agents - we're "Homo reciprocans" - humans who cooperate, punish cheaters, and enforce social norms even at personal cost.</p>
+
+                    <p><strong>The big revelation:</strong> Free market theory assumes everyone acts in pure self-interest. But this game proves that's wrong. We need fairness, not just mutual benefit. That's why societies need labor laws, why trust matters in business, and why extreme inequality destabilizes economies. The game is simple, but it reveals something profound about human nature.</p>
+                </div>
+
+                <div class="input-section">
+                    <label for="player-name">Enter a nickname (optional):</label>
+                    <input type="text" id="player-name" placeholder="Anonymous" maxlength="20">
+                </div>
+
+                <button id="start-game-btn" class="btn btn-primary btn-large">
+                    Start Playing
+                </button>
+
+                <div class="live-stats-preview">
+                    <h4>Live Global Stats:</h4>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-avg-offer">...</div>
+                            <div class="mini-stat-label">Average Offer</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-reject-rate">...</div>
+                            <div class="mini-stat-label">Rejection Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen" style="display: none;">
+            <div class="game-layout">
+                <div class="main-panel">
+                    <div class="card game-card">
+                        <div class="round-header">
+                            <h2>Round <span id="round-number">1</span> of 5</h2>
+                            <div class="role-badge" id="role-badge">PROPOSER</div>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill" style="width: 20%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Proposer View -->
+                        <div id="proposer-view" class="role-view">
+                            <h3>You are the PROPOSER</h3>
+                            <p class="role-description">You have <span class="money">$10</span>. How much do you offer the other person?</p>
+
+                            <div class="offer-input">
+                                <label for="offer-amount">How much do you offer them? (Enter $0-$10)</label>
+                                <div class="input-container">
+                                    <input type="number" id="offer-amount" min="0" max="10" value="5" step="1">
+                                </div>
+                                <div class="offer-display">
+                                    <div class="offer-values">
+                                        <div class="offer-split">
+                                            <span class="label">You get:</span>
+                                            <span class="value" id="you-get">$5</span>
+                                        </div>
+                                        <div class="offer-split highlight">
+                                            <span class="label">They get:</span>
+                                            <span class="value money" id="they-get">$5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button id="submit-offer-btn" class="btn btn-primary btn-large">Submit Offer</button>
+                        </div>
+
+                        <!-- Responder View -->
+                        <div id="responder-view" class="role-view" style="display: none;">
+                            <h3>You are the RESPONDER</h3>
+                            <p class="role-description">The other person offers you <span class="money" id="offer-amount-display">$0</span> out of $10.</p>
+
+                            <div class="offer-received">
+                                <div class="split-display">
+                                    <div class="split-item">
+                                        <span class="split-label">They get:</span>
+                                        <span class="split-value" id="proposer-gets">$0</span>
+                                    </div>
+                                    <div class="split-item highlight">
+                                        <span class="split-label">You get:</span>
+                                        <span class="split-value money" id="responder-gets">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="decision-prompt">Do you accept this offer?</p>
+
+                            <div class="button-group">
+                                <button id="accept-btn" class="btn btn-choice btn-accept">
+                                    <span class="choice-icon">✅</span>
+                                    <span class="choice-label">Accept</span>
+                                </button>
+                                <button id="reject-btn" class="btn btn-choice btn-reject">
+                                    <span class="choice-icon">❌</span>
+                                    <span class="choice-label">Reject</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Result View -->
+                        <div id="result-view" class="result-view" style="display: none;">
+                            <h4>Round Result</h4>
+                            <div class="result-content" id="result-content">
+                                <!-- Dynamically filled -->
+                            </div>
+                            <button id="next-round-btn" class="btn btn-primary">Next Round</button>
+                        </div>
+                    </div>
+
+                    <div class="card crowd-card">
+                        <h3>What Others Do</h3>
+                        <div id="crowd-stats"></div>
+                    </div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="card stats-card">
+                        <h3>Your Stats</h3>
+                        <div class="stat-grid">
+                            <div class="stat-box">
+                                <div class="stat-label">Total Earnings</div>
+                                <div class="stat-value money" id="total-earnings">$0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Avg Offer</div>
+                                <div class="stat-value" id="avg-offer">$0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card history-card">
+                        <h3>Round History</h3>
+                        <div class="history-list" id="history-list">
+                            <p class="empty-state">No rounds played yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="results-screen" style="display: none;">
+            <div class="card results-card">
+                <h2>🎯 Your Results!</h2>
+
+                <div class="final-stats">
+                    <div class="final-stat">
+                        <div class="final-stat-label">Total Earnings</div>
+                        <div class="final-stat-value money" id="final-earnings">$0</div>
+                    </div>
+                    <div class="final-stat">
+                        <div class="final-stat-label">Average Offer</div>
+                        <div class="final-stat-value" id="final-avg-offer">$0</div>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <h3>How You Compare</h3>
+                    <div id="comparison-content"></div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Offer Distribution</h3>
+                    <p class="chart-description">Your offers vs everyone else</p>
+                    <div class="chart-container">
+                        <canvas id="offerChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="insights-section">
+                    <h3>📊 Human Behavior Insights</h3>
+                    <div class="insights-grid" id="insights-grid"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="play-again-btn" class="btn btn-primary btn-large">Play Again</button>
+                    <a href="../" class="btn btn-secondary btn-large">Back to Hub</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="card footer-card">
+                <h3>About This Game</h3>
+                <p>The Ultimatum Game reveals how humans balance fairness and self-interest. While pure logic says to accept any offer above $0, most people reject "unfair" offers below 20-30%. This shows we're not purely rational - we care about fairness even when it costs us!</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="../shared/firebase-config.js"></script>
+    <script type="module" src="game.js"></script>
+</body>
+</html>

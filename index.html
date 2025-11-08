@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Theory Arcade - Interactive Learning Games</title>
+    <meta name="description" content="Learn game theory through interactive games. Play Prisoner's Dilemma, Ultimatum Game, and more. See how your decisions compare to thousands of players.">
+    <link rel="stylesheet" href="hub-style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1><span class="emoji-animated">🎮</span> Game Theory Arcade</h1>
+            <p class="tagline">Learn how humans really make decisions</p>
+        </header>
+
+        <div class="games-grid">
+            <!-- Prisoner's Dilemma Card -->
+            <div class="game-card active">
+                <div class="game-badge live">Live</div>
+                <div class="game-icon">⚖️</div>
+                <h2>Prisoner's Dilemma</h2>
+                <p class="game-description">Trust or betray? Make tough choices and see how you compare to thousands of real players.</p>
+
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="pd-players">1,247</span>
+                        <span class="stat-label">Players</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="pd-coop">52%</span>
+                        <span class="stat-label">Cooperation</span>
+                    </div>
+                </div>
+
+                <div class="game-tags">
+                    <span class="tag">Nash Equilibrium</span>
+                    <span class="tag">Trust</span>
+                    <span class="tag">10 Rounds</span>
+                </div>
+
+                <a href="prisoners-dilemma/" class="btn btn-play">Play Now →</a>
+            </div>
+
+            <!-- Ultimatum Game Card -->
+            <div class="game-card active">
+                <div class="game-badge live">Live</div>
+                <div class="game-icon">💰</div>
+                <h2>Ultimatum Game</h2>
+                <p class="game-description">Split money with a stranger. How fair will you be? How much unfairness will you tolerate?</p>
+
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="ug-players">...</span>
+                        <span class="stat-label">Players</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="ug-avg-offer">...</span>
+                        <span class="stat-label">Avg Offer</span>
+                    </div>
+                </div>
+
+                <div class="game-tags">
+                    <span class="tag">Fairness</span>
+                    <span class="tag">Behavioral Economics</span>
+                    <span class="tag">5 Rounds</span>
+                </div>
+
+                <a href="ultimatum-game/" class="btn btn-play">Play Now →</a>
+            </div>
+
+            <!-- Tragedy of the Commons Card -->
+            <div class="game-card active">
+                <div class="game-badge live">Live</div>
+                <div class="game-icon">🌍</div>
+                <h2>Tragedy of the Commons</h2>
+                <p class="game-description">Fish from a shared lake. Will you be sustainable or grab what you can before others do?</p>
+
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="tc-players">...</span>
+                        <span class="stat-label">Players</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="tc-survival">...</span>
+                        <span class="stat-label">Survival Rate</span>
+                    </div>
+                </div>
+
+                <div class="game-tags">
+                    <span class="tag">Resource Management</span>
+                    <span class="tag">Sustainability</span>
+                    <span class="tag">10 Rounds</span>
+                </div>
+
+                <a href="tragedy-commons/" class="btn btn-play">Play Now →</a>
+            </div>
+
+            <!-- Public Goods Game Card -->
+            <div class="game-card active">
+                <div class="game-badge live">Live</div>
+                <div class="game-icon">🏛️</div>
+                <h2>Public Goods Game</h2>
+                <p class="game-description">Contribute to the public fund or free-ride? See why Wikipedia needs donation drives.</p>
+
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="pg-players">...</span>
+                        <span class="stat-label">Players</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="pg-avg-contrib">...</span>
+                        <span class="stat-label">Avg Contribution</span>
+                    </div>
+                </div>
+
+                <div class="game-tags">
+                    <span class="tag">Free Riding</span>
+                    <span class="tag">Public Goods</span>
+                    <span class="tag">10 Rounds</span>
+                </div>
+
+                <a href="public-goods/" class="btn btn-play">Play Now →</a>
+            </div>
+        </div>
+
+        <footer class="main-footer">
+            <div class="footer-content">
+                <h3>About Game Theory Arcade</h3>
+                <p>Interactive games that teach game theory concepts through real human behavior. Play, compare your decisions to thousands of others, and discover how humans actually make strategic choices.</p>
+
+                <div class="footer-links">
+                    <a href="https://github.com/MayurHulke/game-theory-arcade" target="_blank">GitHub</a>
+                    <span>•</span>
+                    <a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank">Learn About Game Theory</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module">
+        // Load live stats for games
+        import { firebaseConfig, isFirebaseConfigured } from './shared/firebase-config.js';
+
+        async function loadStats() {
+            if (!isFirebaseConfigured()) {
+                // Demo stats
+                document.getElementById('pd-players').textContent = '1,247';
+                document.getElementById('pd-coop').textContent = '52%';
+                document.getElementById('ug-players').textContent = '823';
+                document.getElementById('ug-avg-offer').textContent = '$4.20';
+                document.getElementById('tc-players').textContent = '1,584';
+                document.getElementById('tc-survival').textContent = '42%';
+                document.getElementById('pg-players').textContent = '2,341';
+                document.getElementById('pg-avg-contrib').textContent = '$4.20';
+                return;
+            }
+
+            try {
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+                const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+
+                const app = initializeApp(firebaseConfig);
+                const db = getDatabase(app);
+
+                // Load Prisoner's Dilemma stats
+                const gamesSnapshot = await get(ref(db, 'games'));
+                if (gamesSnapshot.exists()) {
+                    const games = Object.values(gamesSnapshot.val());
+                    document.getElementById('pd-players').textContent = games.length.toLocaleString();
+
+                    // Calculate average cooperation
+                    const avgCoop = Math.round(
+                        games.reduce((sum, g) => sum + (g.cooperationRate || 0), 0) / games.length
+                    );
+                    document.getElementById('pd-coop').textContent = `${avgCoop}%`;
+                }
+
+                // Load Ultimatum Game stats
+                const ugGamesSnapshot = await get(ref(db, 'ultimatum-games'));
+                if (ugGamesSnapshot.exists()) {
+                    const ugGames = Object.values(ugGamesSnapshot.val());
+                    document.getElementById('ug-players').textContent = ugGames.length.toLocaleString();
+
+                    // Calculate average offer
+                    const avgOffer = (
+                        ugGames.reduce((sum, g) => sum + (g.averageOffer || 0), 0) / ugGames.length
+                    ).toFixed(2);
+                    document.getElementById('ug-avg-offer').textContent = `$${avgOffer}`;
+                } else {
+                    document.getElementById('ug-players').textContent = '0';
+                    document.getElementById('ug-avg-offer').textContent = '$0.00';
+                }
+
+                // Load Tragedy of the Commons stats
+                const tcGamesSnapshot = await get(ref(db, 'tragedy-games'));
+                if (tcGamesSnapshot.exists()) {
+                    const tcGames = Object.values(tcGamesSnapshot.val());
+                    document.getElementById('tc-players').textContent = tcGames.length.toLocaleString();
+
+                    // Calculate survival rate
+                    const survived = tcGames.filter(g => !g.lakeDied).length;
+                    const survivalRate = Math.round((survived / tcGames.length) * 100);
+                    document.getElementById('tc-survival').textContent = `${survivalRate}%`;
+                } else {
+                    document.getElementById('tc-players').textContent = '0';
+                    document.getElementById('tc-survival').textContent = '0%';
+                }
+
+                // Load Public Goods Game stats
+                const pgGamesSnapshot = await get(ref(db, 'public-goods-games'));
+                if (pgGamesSnapshot.exists()) {
+                    const pgGames = Object.values(pgGamesSnapshot.val());
+                    document.getElementById('pg-players').textContent = pgGames.length.toLocaleString();
+
+                    // Calculate average contribution
+                    const avgContrib = (
+                        pgGames.reduce((sum, g) => sum + (g.avgContribution || 0), 0) / pgGames.length
+                    ).toFixed(2);
+                    document.getElementById('pg-avg-contrib').textContent = `$${avgContrib}`;
+                } else {
+                    document.getElementById('pg-players').textContent = '0';
+                    document.getElementById('pg-avg-contrib').textContent = '$0.00';
+                }
+            } catch (error) {
+                console.log('Using demo stats');
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

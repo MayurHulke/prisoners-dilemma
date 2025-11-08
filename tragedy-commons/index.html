@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tragedy of the Commons - Manage Shared Resources</title>
+    <meta name="description" content="Fish from a shared lake. Will you maximize short-term gain or ensure long-term sustainability? See how greed destroys what we all depend on.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Tragedy of the Commons</h1>
+            <p class="subtitle">Fish wisely, or watch the lake die</p>
+            <div class="player-count">
+                <span class="pulse-dot"></span>
+                <span id="total-players">Loading...</span> people have played
+            </div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="card welcome-card">
+                <h2>The Fishing Village Dilemma</h2>
+
+                <div class="scenario-box">
+                    <h3>The Setup</h3>
+                    <p>You're a fisher in a village of 5 that shares a lake. The lake has <strong>100 fish</strong>.</p>
+
+                    <div class="rules-list">
+                        <div class="rule-item">
+                            <span class="rule-icon">🎣</span>
+                            <div class="rule-text">
+                                <strong>Your Choice:</strong> Each round, catch Low (5 fish), Medium (10 fish), or High (15 fish)
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">🐟</span>
+                            <div class="rule-text">
+                                <strong>Regeneration:</strong> The lake naturally adds 30 fish each round
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">⚠️</span>
+                            <div class="rule-text">
+                                <strong>The Catch:</strong> If total fishing exceeds regeneration, the lake shrinks. If it hits 0, everyone starves!
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">💰</span>
+                            <div class="rule-text">
+                                <strong>Your Earnings:</strong> Fish × Lake Health. A depleted lake makes fish worthless!
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="highlight">🤔 Will you fish sustainably or maximize short-term gain?</p>
+                </div>
+
+                <div class="theory-box">
+                    <h3>How This Works</h3>
+                    <p>🤖 You fish alongside 4 AI villagers who use different strategies (greedy, sustainable, adaptive).</p>
+                    <p>📊 Your sustainability score is compared to thousands of real players.</p>
+                    <p>🧪 The AI models real-world behavior - some people prioritize long-term, others grab what they can!</p>
+                </div>
+
+                <div class="theory-box nerd-section">
+                    <h3>Why This Game Matters</h3>
+
+                    <p><strong>Imagine this:</strong> You live in a fishing village. You know if everyone catches 10 fish per day, the population stays healthy forever. But if you catch 15, you make 50% more money... and the lake can handle it if you're the only one. But here's the problem - everyone's thinking the same thing. Within months, the lake is empty and your village starves. Sound dramatic? It's happening right now, worldwide.</p>
+
+                    <p><strong>This is happening everywhere:</strong> The Grand Banks cod fishery off Canada was one of the richest in the world for 500 years. In the 1990s, it collapsed completely - 40,000 jobs lost overnight. Why? Every fishing company knew they were overfishing. But if they didn't catch fish, their competitors would. So everyone raced to catch more, faster, until there was nothing left. The fishery still hasn't recovered 30 years later.</p>
+
+                    <p><strong>It's not just fish:</strong> California droughts get worse because farmers pump groundwater (if I don't pump it, my neighbor will). Traffic jams happen because everyone drives (public transit is slower, but if everyone drove less, traffic wouldn't exist). Climate change accelerates because countries pollute (cutting emissions hurts my economy, but if everyone cuts, everyone wins). Antibiotic resistance spreads because doctors overprescribe (if I don't give antibiotics, patients go elsewhere).</p>
+
+                    <p><strong>Why we can't stop ourselves:</strong> The math is brutal. If the lake has 100 fish and regenerates 30/round, sustainable fishing is 30 total (6 per fisher). But if you fish 15 while others fish 6, you make 2.5x more money. The lake shrinks slowly, but you're rich today. This is the trap - being "responsible" means you sacrifice while others profit. Being greedy means you profit until everyone's greedy, then everyone loses.</p>
+
+                    <p><strong>Real solutions that work:</strong> Elinor Ostrom won the Nobel Prize for studying communities that solved this. Successful examples: Lobster gangs in Maine (community-enforced quotas), Swiss Alpine meadows (shared grazing rights with rules), Japanese village forests (collective management). The key isn't privatization or government control - it's communities with: clear boundaries, local rule-making, monitoring, graduated sanctions, and conflict resolution.</p>
+
+                    <p><strong>Why it usually fails:</strong> Most commons collapse because: the group is too large (can't monitor everyone), people can leave and join freely (no accountability), there's no communication (can't coordinate), or outsiders can exploit the resource (no boundaries). This is why ocean fisheries collapse but community lakes survive - scale and governance matter.</p>
+
+                    <p><strong>The modern challenge:</strong> Climate change is the ultimate tragedy of the commons - a global resource (the atmosphere) with no boundaries, no enforcement, and delayed consequences. Every country benefits from polluting today and suffers from collective pollution tomorrow. The game shows why international climate agreements are so hard: being first to cut emissions means economic sacrifice while others free-ride. The tragedy isn't that people are evil - it's that rational individual choices destroy collective welfare.</p>
+                </div>
+
+                <div class="input-section">
+                    <label for="player-name">Enter a nickname (optional):</label>
+                    <input type="text" id="player-name" placeholder="Anonymous" maxlength="20">
+                </div>
+
+                <button id="start-game-btn" class="btn btn-primary btn-large">
+                    Start Fishing
+                </button>
+
+                <div class="live-stats-preview">
+                    <h4>Live Global Stats:</h4>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-survival-rate">...</div>
+                            <div class="mini-stat-label">Lake Survival Rate</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-avg-greed">...</div>
+                            <div class="mini-stat-label">Avg Greed Level</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen" style="display: none;">
+            <div class="game-layout">
+                <div class="main-panel">
+                    <div class="card game-card">
+                        <div class="round-header">
+                            <h2>Round <span id="round-number">1</span> of 10</h2>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill" style="width: 10%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Resource Status -->
+                        <div class="resource-status">
+                            <div class="resource-header">
+                                <h3>Lake Status</h3>
+                                <span class="resource-count" id="fish-count">100 fish</span>
+                            </div>
+                            <div class="resource-bar">
+                                <div id="resource-fill" class="resource-fill" style="width: 100%"></div>
+                            </div>
+                            <div class="resource-indicator">
+                                <span class="indicator-label healthy">🟢 Healthy</span>
+                                <span class="indicator-label warning" style="display: none;">🟡 Declining</span>
+                                <span class="indicator-label critical" style="display: none;">🔴 Critical</span>
+                                <span class="indicator-label dead" style="display: none;">💀 Depleted</span>
+                            </div>
+                        </div>
+
+                        <!-- Decision View -->
+                        <div id="decision-view" class="decision-view">
+                            <h3>How Many Fish Will You Catch?</h3>
+                            <p class="decision-prompt">The lake regenerates 30 fish per round. Choose wisely...</p>
+
+                            <div class="fishing-options">
+                                <button class="fishing-btn" data-amount="5">
+                                    <div class="fishing-icon">🎣</div>
+                                    <div class="fishing-label">Low</div>
+                                    <div class="fishing-amount">5 fish</div>
+                                    <div class="fishing-desc">Sustainable</div>
+                                </button>
+                                <button class="fishing-btn" data-amount="10">
+                                    <div class="fishing-icon">🎣🎣</div>
+                                    <div class="fishing-label">Medium</div>
+                                    <div class="fishing-amount">10 fish</div>
+                                    <div class="fishing-desc">Balanced</div>
+                                </button>
+                                <button class="fishing-btn" data-amount="15">
+                                    <div class="fishing-icon">🎣🎣🎣</div>
+                                    <div class="fishing-label">High</div>
+                                    <div class="fishing-amount">15 fish</div>
+                                    <div class="fishing-desc">Greedy</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Result View -->
+                        <div id="result-view" class="result-view" style="display: none;">
+                            <h4>Round Result</h4>
+                            <div class="result-content" id="result-content"></div>
+                            <button id="next-round-btn" class="btn btn-primary">Next Round</button>
+                        </div>
+                    </div>
+
+                    <div class="card village-card">
+                        <h3>Your Village</h3>
+                        <div id="village-activity"></div>
+                    </div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="card stats-card">
+                        <h3>Your Stats</h3>
+                        <div class="stat-grid">
+                            <div class="stat-box">
+                                <div class="stat-label">Total Fish Caught</div>
+                                <div class="stat-value" id="total-fish">0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Earnings</div>
+                                <div class="stat-value money" id="total-earnings">$0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Avg Per Round</div>
+                                <div class="stat-value" id="avg-catch">0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Greed Score</div>
+                                <div class="stat-value" id="greed-score">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card history-card">
+                        <h3>Round History</h3>
+                        <div class="history-list" id="history-list">
+                            <p class="empty-state">No rounds played yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="results-screen" style="display: none;">
+            <div class="card results-card">
+                <h2 id="results-title">🎯 Final Results</h2>
+
+                <div id="outcome-message" class="outcome-message"></div>
+
+                <div class="final-stats">
+                    <div class="final-stat">
+                        <div class="final-stat-label">Total Earnings</div>
+                        <div class="final-stat-value money" id="final-earnings">$0</div>
+                    </div>
+                    <div class="final-stat">
+                        <div class="final-stat-label">Fish Caught</div>
+                        <div class="final-stat-value" id="final-fish">0</div>
+                    </div>
+                    <div class="final-stat">
+                        <div class="final-stat-label">Final Lake Health</div>
+                        <div class="final-stat-value" id="final-lake">0%</div>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <h3>How You Compare</h3>
+                    <div id="comparison-content"></div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Lake Health Over Time</h3>
+                    <div class="chart-container">
+                        <canvas id="resourceChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="insights-section">
+                    <h3>What Happened</h3>
+                    <div class="insights-grid" id="insights-grid"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="play-again-btn" class="btn btn-primary btn-large">Play Again</button>
+                    <a href="../" class="btn btn-secondary btn-large">Back to Hub</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="card footer-card">
+                <h3>About This Game</h3>
+                <p>The Tragedy of the Commons shows how shared resources get destroyed when individuals act in self-interest. From overfishing to climate change, this pattern explains some of humanity's biggest challenges - and why cooperation is so hard to achieve.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="../shared/firebase-config.js"></script>
+    <script type="module" src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Goods Game - Free Rider or Contributor?</title>
+    <meta name="description" content="Contribute to the public fund or free-ride? See why Wikipedia needs donation drives and why public goods are so hard to fund.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Public Goods Game</h1>
+            <p class="subtitle">Contribute to the commons or free-ride?</p>
+            <div class="player-count">
+                <span class="pulse-dot"></span>
+                <span id="total-players">Loading...</span> people have played
+            </div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="card welcome-card">
+                <h2>The Public Fund Experiment</h2>
+
+                <div class="scenario-box">
+                    <h3>The Setup</h3>
+                    <p>You're a citizen in a community of <strong>5 people</strong>. Each person has <strong>$10</strong>.</p>
+
+                    <div class="rules-list">
+                        <div class="rule-item">
+                            <span class="rule-icon">💵</span>
+                            <div class="rule-text">
+                                <strong>Your Choice:</strong> Contribute $0-$10 to the public fund
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">✨</span>
+                            <div class="rule-text">
+                                <strong>The Multiplier:</strong> Total contributions get doubled (2x social benefit!)
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">⚖️</span>
+                            <div class="rule-text">
+                                <strong>Distribution:</strong> The multiplied fund is split equally among all 5 people
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">💡</span>
+                            <div class="rule-text">
+                                <strong>The Catch:</strong> You benefit from others' contributions even if you contribute $0!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Example:</h4>
+                        <p><strong>Everyone contributes $10:</strong></p>
+                        <p>Pool = $50 × 2 = $100 → Each gets $20 (doubled your money! 📈)</p>
+
+                        <p style="margin-top: 1rem;"><strong>You contribute $0, others $10:</strong></p>
+                        <p>Pool = $40 × 2 = $80 → You get $16 for FREE + keep your $10 = $26 total! 🏴‍☠️</p>
+
+                        <p style="margin-top: 1rem;"><strong>Everyone free-rides ($0):</strong></p>
+                        <p>Pool = $0 → Everyone gets $0 (tragedy! 💀)</p>
+                    </div>
+
+                    <p class="highlight">🤔 Will you contribute or free-ride?</p>
+                </div>
+
+                <div class="theory-box">
+                    <h3>How This Works</h3>
+                    <p>🤖 You're with 4 AI citizens who use different strategies (altruist, free-rider, conditional cooperator).</p>
+                    <p>📊 Your contribution rate is compared to thousands of real players.</p>
+                    <p>🧪 The AI models real behavior - some always contribute, some never do, some match the group!</p>
+                </div>
+
+                <div class="theory-box nerd-section">
+                    <h3>Why This Game Matters</h3>
+
+                    <p><strong>Think about Wikipedia:</strong> You use it all the time. It's free, comprehensive, ad-free. But it costs millions to run. The donation banner pops up: "If everyone reading this donated $3, we'd be done in an hour." But you think - millions of people use this, they don't need MY $3. So you click X. But here's the problem: everyone's thinking the same thing. If everyone free-rides, Wikipedia dies.</p>
+
+                    <p><strong>This is everywhere:</strong> PBS/NPR run pledge drives because most listeners never donate. Open source software (Linux, Firefox) is built by volunteers while millions use it for free. Climate action fails because each country thinks "We're only 2% of emissions, let others cut first." Vaccination campaigns struggle because people think "If enough others vaccinate, I'll be protected without the risk." The pattern is identical: rational individual choice → collective failure.</p>
+
+                    <p><strong>Why free-riding is so tempting:</strong> Say the community has $50 to contribute. If you contribute $10 and others contribute $40, the pool is $100, divided by 5 = $20 each. You spent $10, got $20 back, net gain = $10. But if you contribute $0 and others contribute $50, pool is $100, you still get $20! You spent $0, got $20, net gain = $20. Free-riding literally doubles your profit. The math punishes contribution and rewards selfishness.</p>
+
+                    <p><strong>Real-world evidence:</strong> Economist James Andreoni ran these experiments with actual money. Average contribution starts at 40-60% in round 1, then declines to 10-30% by round 10. Why? People see others free-riding and think "I'm a sucker for contributing." Cooperation collapses not from greed, but from distrust. The few cooperators feel exploited and quit, leaving only free-riders.</p>
+
+                    <p><strong>What actually works:</strong> Punishment systems (fines for non-contributors), reputation tracking (public contribution records), small groups where you know everyone (harder to free-ride on friends), conditional commitment ("I'll donate if 100 others do"), and most powerful: changing the frame from "donation" to "membership fee" (Netflix vs Wikipedia - same money, different psychology).</p>
+
+                    <p><strong>The deep problem:</strong> Public goods have two features that doom them: non-excludability (can't block free-riders from benefits) and non-rivalry (one person's use doesn't reduce another's). Clean air, national defense, public radio, herd immunity, open-source software - all share these traits. The market can't provide them efficiently because rational individuals won't pay for what they get anyway. This is why governments exist and why taxes aren't optional.</p>
+
+                    <p><strong>Why this matters now:</strong> Climate change is the ultimate public goods problem. Every country benefits from a stable climate, every country bears costs of emissions cuts. China says "America polluted for 100 years, why should we cut first?" America says "China's emissions are higher now." Meanwhile the climate crisis accelerates. The game shows why international cooperation is so brutally hard - being the first to contribute makes you a sucker. The tragedy isn't that people are evil, it's that rational self-interest destroys public goods.</p>
+                </div>
+
+                <div class="input-section">
+                    <label for="player-name">Enter a nickname (optional):</label>
+                    <input type="text" id="player-name" placeholder="Anonymous" maxlength="20">
+                </div>
+
+                <button id="start-game-btn" class="btn btn-primary btn-large">
+                    Start Playing
+                </button>
+
+                <div class="live-stats-preview">
+                    <h4>Live Global Stats:</h4>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-avg-contrib">...</div>
+                            <div class="mini-stat-label">Avg Contribution</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="preview-free-rider">...</div>
+                            <div class="mini-stat-label">Free-Rider Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen" style="display: none;">
+            <div class="game-layout">
+                <div class="main-panel">
+                    <div class="card game-card">
+                        <div class="round-header">
+                            <h2>Round <span id="round-number">1</span> of 10</h2>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill" style="width: 10%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Decision View -->
+                        <div id="decision-view" class="decision-view">
+                            <h3>How Much Will You Contribute?</h3>
+                            <p class="decision-prompt">You have $10. The pool will be doubled and split among all 5 citizens.</p>
+
+                            <div class="contribution-input">
+                                <label for="contribution-amount">Your Contribution ($0-$10):</label>
+                                <div class="input-container">
+                                    <input type="number" id="contribution-amount" min="0" max="10" value="5" step="1">
+                                </div>
+                                <div class="contribution-preview">
+                                    <p class="preview-text">
+                                        You keep: <span class="money" id="keep-amount">$5</span> |
+                                        You contribute: <span class="contrib-amount" id="contrib-display">$5</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button id="submit-contrib-btn" class="btn btn-primary btn-large">Submit Contribution</button>
+                        </div>
+
+                        <!-- Result View -->
+                        <div id="result-view" class="result-view" style="display: none;">
+                            <h4>Round Result</h4>
+                            <div class="result-content" id="result-content"></div>
+                            <button id="next-round-btn" class="btn btn-primary">Next Round</button>
+                        </div>
+                    </div>
+
+                    <div class="card citizens-card">
+                        <h3>Community Contributions</h3>
+                        <div id="citizens-activity"></div>
+                    </div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="card stats-card">
+                        <h3>Your Stats</h3>
+                        <div class="stat-grid">
+                            <div class="stat-box">
+                                <div class="stat-label">Total Wealth</div>
+                                <div class="stat-value money" id="total-wealth">$100</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Total Contributed</div>
+                                <div class="stat-value contrib-color" id="total-contributed">$0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Avg Contribution</div>
+                                <div class="stat-value" id="avg-contribution">$0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Free-Ride Score</div>
+                                <div class="stat-value" id="free-ride-score">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card history-card">
+                        <h3>Round History</h3>
+                        <div class="history-list" id="history-list">
+                            <p class="empty-state">No rounds played yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="results-screen" style="display: none;">
+            <div class="card results-card">
+                <h2>🎯 Final Results</h2>
+
+                <div class="final-stats">
+                    <div class="final-stat">
+                        <div class="final-stat-label">Final Wealth</div>
+                        <div class="final-stat-value money" id="final-wealth">$0</div>
+                    </div>
+                    <div class="final-stat">
+                        <div class="final-stat-label">Total Contributed</div>
+                        <div class="final-stat-value contrib-color" id="final-contributed">$0</div>
+                    </div>
+                    <div class="final-stat">
+                        <div class="final-stat-label">Avg Contribution</div>
+                        <div class="final-stat-value" id="final-avg-contrib">$0</div>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <h3>How You Compare</h3>
+                    <div id="comparison-content"></div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Contribution Pattern</h3>
+                    <div class="chart-container">
+                        <canvas id="contribChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="insights-section">
+                    <h3>What Happened</h3>
+                    <div class="insights-grid" id="insights-grid"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="play-again-btn" class="btn btn-primary btn-large">Play Again</button>
+                    <a href="../" class="btn btn-secondary btn-large">Back to Hub</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="card footer-card">
+                <h3>About This Game</h3>
+                <p>The Public Goods Game reveals why Wikipedia needs donation drives, why public broadcasting struggles, and why climate action is so hard. When everyone can benefit without contributing, rational self-interest destroys collective welfare.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="../shared/firebase-config.js"></script>
+    <script type="module" src="game.js"></script>
+</body>
+</html>
