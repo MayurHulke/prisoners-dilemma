@@ -141,6 +141,7 @@
     <script type="module">
         // Load live stats for games
         import { firebaseConfig, isFirebaseConfigured } from './shared/firebase-config.js';
+        import { safeNumberFormat, safePercentFormat, sanitizeFirebaseData } from './shared/dom-utils.js';
 
         async function loadStats() {
             if (!isFirebaseConfigured()) {
@@ -167,26 +168,26 @@
                 const gamesSnapshot = await get(ref(db, 'games'));
                 if (gamesSnapshot.exists()) {
                     const games = Object.values(gamesSnapshot.val());
-                    document.getElementById('pd-players').textContent = games.length.toLocaleString();
+                    const playerCount = Math.min(games.length, 999999); // Cap at reasonable number
+                    document.getElementById('pd-players').textContent = playerCount.toLocaleString();
 
-                    // Calculate average cooperation
-                    const avgCoop = Math.round(
-                        games.reduce((sum, g) => sum + (g.cooperationRate || 0), 0) / games.length
-                    );
-                    document.getElementById('pd-coop').textContent = `${avgCoop}%`;
+                    // Calculate average cooperation (sanitize each value)
+                    const validRates = games.map(g => sanitizeFirebaseData(g.cooperationRate || 0, 'number'));
+                    const avgCoop = validRates.reduce((sum, rate) => sum + rate, 0) / validRates.length;
+                    document.getElementById('pd-coop').textContent = safePercentFormat(avgCoop);
                 }
 
                 // Load Ultimatum Game stats
                 const ugGamesSnapshot = await get(ref(db, 'ultimatum-games'));
                 if (ugGamesSnapshot.exists()) {
                     const ugGames = Object.values(ugGamesSnapshot.val());
-                    document.getElementById('ug-players').textContent = ugGames.length.toLocaleString();
+                    const playerCount = Math.min(ugGames.length, 999999);
+                    document.getElementById('ug-players').textContent = playerCount.toLocaleString();
 
-                    // Calculate average offer
-                    const avgOffer = (
-                        ugGames.reduce((sum, g) => sum + (g.averageOffer || 0), 0) / ugGames.length
-                    ).toFixed(2);
-                    document.getElementById('ug-avg-offer').textContent = `$${avgOffer}`;
+                    // Calculate average offer (sanitize each value)
+                    const validOffers = ugGames.map(g => sanitizeFirebaseData(g.averageOffer || 0, 'number'));
+                    const avgOffer = validOffers.reduce((sum, offer) => sum + offer, 0) / validOffers.length;
+                    document.getElementById('ug-avg-offer').textContent = `$${safeNumberFormat(avgOffer, 2)}`;
                 } else {
                     document.getElementById('ug-players').textContent = '0';
                     document.getElementById('ug-avg-offer').textContent = '$0.00';
@@ -196,12 +197,13 @@
                 const tcGamesSnapshot = await get(ref(db, 'tragedy-games'));
                 if (tcGamesSnapshot.exists()) {
                     const tcGames = Object.values(tcGamesSnapshot.val());
-                    document.getElementById('tc-players').textContent = tcGames.length.toLocaleString();
+                    const playerCount = Math.min(tcGames.length, 999999);
+                    document.getElementById('tc-players').textContent = playerCount.toLocaleString();
 
-                    // Calculate survival rate
-                    const survived = tcGames.filter(g => !g.lakeDied).length;
-                    const survivalRate = Math.round((survived / tcGames.length) * 100);
-                    document.getElementById('tc-survival').textContent = `${survivalRate}%`;
+                    // Calculate survival rate (sanitize boolean values)
+                    const survived = tcGames.filter(g => !sanitizeFirebaseData(g.lakeDied, 'boolean')).length;
+                    const survivalRate = (survived / tcGames.length) * 100;
+                    document.getElementById('tc-survival').textContent = safePercentFormat(survivalRate);
                 } else {
                     document.getElementById('tc-players').textContent = '0';
                     document.getElementById('tc-survival').textContent = '0%';
@@ -211,13 +213,13 @@
                 const pgGamesSnapshot = await get(ref(db, 'public-goods-games'));
                 if (pgGamesSnapshot.exists()) {
                     const pgGames = Object.values(pgGamesSnapshot.val());
-                    document.getElementById('pg-players').textContent = pgGames.length.toLocaleString();
+                    const playerCount = Math.min(pgGames.length, 999999);
+                    document.getElementById('pg-players').textContent = playerCount.toLocaleString();
 
-                    // Calculate average contribution
-                    const avgContrib = (
-                        pgGames.reduce((sum, g) => sum + (g.avgContribution || 0), 0) / pgGames.length
-                    ).toFixed(2);
-                    document.getElementById('pg-avg-contrib').textContent = `$${avgContrib}`;
+                    // Calculate average contribution (sanitize each value)
+                    const validContribs = pgGames.map(g => sanitizeFirebaseData(g.avgContribution || 0, 'number'));
+                    const avgContrib = validContribs.reduce((sum, c) => sum + c, 0) / validContribs.length;
+                    document.getElementById('pg-avg-contrib').textContent = `$${safeNumberFormat(avgContrib, 2)}`;
                 } else {
                     document.getElementById('pg-players').textContent = '0';
                     document.getElementById('pg-avg-contrib').textContent = '$0.00';
