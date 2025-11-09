@@ -187,24 +187,6 @@ function generateSessionId() {
     return `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-// Update opponent strategy display
-function updateOpponentDisplay() {
-    const strategy = OPPONENT_STRATEGIES[gameState.opponentStrategy];
-    const opponentInfo = document.getElementById('opponent-strategy-info');
-
-    if (opponentInfo) {
-        opponentInfo.innerHTML = `
-            <div class="opponent-strategy">
-                <span class="strategy-emoji">${strategy.emoji}</span>
-                <div class="strategy-details">
-                    <div class="strategy-name">${strategy.name}</div>
-                    <div class="strategy-description">${strategy.description}</div>
-                </div>
-            </div>
-        `;
-    }
-}
-
 // Save game data to Firebase
 async function saveGameData() {
     if (!isFirebaseReady || !window.firebaseDB) {
@@ -418,7 +400,6 @@ function startGame() {
     gameScreen.style.display = 'block';
 
     updateGameUI();
-    updateOpponentDisplay();
 }
 
 // Make choice
@@ -618,6 +599,25 @@ async function showResults() {
     const archetypeCount = stats.cooperationRates.filter(rate => archetype.condition(rate)).length;
     const prevalence = Math.round((archetypeCount / stats.cooperationRates.length) * 100);
     document.getElementById('archetype-prevalence').textContent = `${prevalence}% of players share this archetype`;
+
+    // Reveal opponent strategy
+    const strategy = OPPONENT_STRATEGIES[gameState.opponentStrategy];
+    const opponentReveal = document.getElementById('opponent-reveal');
+    if (opponentReveal) {
+        opponentReveal.innerHTML = `
+            <div class="opponent-strategy-reveal">
+                <h3>🎭 Opponent Strategy Revealed</h3>
+                <div class="opponent-strategy">
+                    <span class="strategy-emoji">${strategy.emoji}</span>
+                    <div class="strategy-details">
+                        <div class="strategy-name">${strategy.name}</div>
+                        <div class="strategy-description">${strategy.description}</div>
+                    </div>
+                </div>
+                <p class="strategy-insight">Now you know! Try playing again to face a different opponent strategy.</p>
+            </div>
+        `;
+    }
 
     // Generate insights
     generateInsights(stats, coopRate);
