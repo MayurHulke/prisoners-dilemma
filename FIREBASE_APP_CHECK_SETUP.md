@@ -2,13 +2,40 @@
 
 Firebase App Check helps protect your backend resources from abuse by preventing unauthorized clients (bots, scrapers) from accessing your Firebase services.
 
-## Step 1: Enable App Check in Firebase Console
+## Step 1: Find App Check in Firebase Console
 
+**Method 1: Left Sidebar (New Console)**
 1. Go to https://console.firebase.google.com/
 2. Select your project: `prisoners-dilemma-game-97e4e`
-3. Click **"App Check"** in the left menu
-4. Click **"Get Started"**
-5. Select your web app from the list (or register one if you haven't)
+3. Look in the **left sidebar menu** for "App Check" (it's usually under "Build" section)
+4. If you don't see it, try clicking "All products" at the bottom of the sidebar
+
+**Method 2: Direct URL**
+Just go directly to:
+```
+https://console.firebase.google.com/project/prisoners-dilemma-game-97e4e/appcheck
+```
+
+**Method 3: Settings (Old Console)**
+1. Click the **gear icon** ⚙️ (Settings) in the left sidebar
+2. Click **"Project settings"**
+3. Look for **"App Check"** tab at the top
+
+**If you STILL can't find it:**
+- App Check might not be available for your Firebase plan (it requires Blaze/pay-as-you-go plan)
+- Your project might need to upgrade from Spark (free) to Blaze plan
+- Check if your Firebase SDK is up to date
+
+---
+
+## Step 2: Register Your Web App (if needed)
+
+Before setting up App Check, you need a registered web app:
+
+1. In Firebase Console, click the **gear icon** ⚙️ → **"Project settings"**
+2. Scroll down to **"Your apps"** section
+3. If you see a web app (</> icon), you're good to go!
+4. If not, click **"Add app"** → **"Web"** → Register with nickname "Game Theory Arcade"
 
 ## Step 2: Register reCAPTCHA v3
 
