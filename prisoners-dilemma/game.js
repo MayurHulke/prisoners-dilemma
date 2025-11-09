@@ -110,13 +110,11 @@ async function saveGameData() {
     try {
         const { ref, set } = window.firebaseDB;
         const gameData = {
-            sessionId: gameState.sessionId,
-            playerName: gameState.playerName,
             timestamp: Date.now(),
-            choices: gameState.choices,
-            totalYears: gameState.totalYears,
+            totalScore: -gameState.totalYears,  // Convert years to score (negative years = better score)
             cooperationRate: calculateCooperationRate(),
-            rounds: gameState.maxRounds
+            rounds: gameState.maxRounds,
+            playerArchetype: determineArchetype(calculateCooperationRate()).name
         };
 
         await set(ref(db, `games/${gameState.sessionId}`), gameData);
