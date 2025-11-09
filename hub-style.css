@@ -123,6 +123,110 @@ body::after {
     text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
 }
 
+/* Global Statistics Section */
+.global-stats {
+    background: var(--card-bg);
+    border: var(--pixel-border) solid var(--secondary-color);
+    padding: 2rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
+    animation: pulse-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+    from { box-shadow: 0 0 20px rgba(255, 0, 255, 0.3); }
+    to { box-shadow: 0 0 40px rgba(255, 0, 255, 0.6); }
+}
+
+.global-stats h3 {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.global-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.global-stat {
+    padding: 1rem;
+    background: var(--bg-color);
+    border: 2px solid var(--primary-color);
+}
+
+.global-stat.highlight {
+    border-color: var(--warning-color);
+    background: rgba(255, 221, 0, 0.1);
+}
+
+.global-stat-value {
+    font-size: 2rem;
+    color: var(--warning-color);
+    text-shadow: 0 0 15px var(--warning-color);
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    animation: number-pulse 2s ease-in-out infinite;
+}
+
+@keyframes number-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.global-stat-label {
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.stats-tagline {
+    font-size: 0.65rem;
+    color: var(--primary-color);
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+/* Key Insight Boxes */
+.key-insight {
+    background: rgba(255, 0, 255, 0.1);
+    border: 2px solid var(--secondary-color);
+    padding: 0.8rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    animation: insight-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes insight-glow {
+    from { border-color: rgba(255, 0, 255, 0.5); }
+    to { border-color: rgba(255, 0, 255, 1); }
+}
+
+.insight-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    animation: rotate-subtle 4s ease-in-out infinite;
+}
+
+@keyframes rotate-subtle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+.insight-text {
+    font-size: 0.55rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+    text-align: left;
+}
+
 /* Games Grid */
 .games-grid {
     display: grid;

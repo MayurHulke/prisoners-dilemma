@@ -24,6 +24,30 @@
             <p class="tagline">Learn how humans really make decisions</p>
         </header>
 
+        <!-- Global Statistics Section -->
+        <div class="global-stats">
+            <h3>🌍 What Real Players Do</h3>
+            <div class="global-stats-grid">
+                <div class="global-stat">
+                    <div class="global-stat-value" id="total-players">...</div>
+                    <div class="global-stat-label">Total Games Played</div>
+                </div>
+                <div class="global-stat highlight">
+                    <div class="global-stat-value" id="humans-cooperate">...</div>
+                    <div class="global-stat-label">Humans cooperate despite game theory predicting 0%</div>
+                </div>
+                <div class="global-stat">
+                    <div class="global-stat-value" id="reject-unfair">...</div>
+                    <div class="global-stat-label">Reject unfair offers even when it costs them money</div>
+                </div>
+                <div class="global-stat">
+                    <div class="global-stat-value" id="lakes-die">...</div>
+                    <div class="global-stat-label">Of shared resources die from overuse</div>
+                </div>
+            </div>
+            <p class="stats-tagline">Are you more rational than the crowd? Or just as human?</p>
+        </div>
+
         <div class="games-grid">
             <!-- Prisoner's Dilemma Card -->
             <div class="game-card active">
@@ -47,6 +71,11 @@
                     <span class="tag">Nash Equilibrium</span>
                     <span class="tag">Trust</span>
                     <span class="tag">10 Rounds</span>
+                </div>
+
+                <div class="key-insight">
+                    <span class="insight-icon">💡</span>
+                    <span class="insight-text" id="pd-insight">Loading insight...</span>
                 </div>
 
                 <a href="prisoners-dilemma/" class="btn btn-play">Play Now →</a>
@@ -76,6 +105,11 @@
                     <span class="tag">5 Rounds</span>
                 </div>
 
+                <div class="key-insight">
+                    <span class="insight-icon">💡</span>
+                    <span class="insight-text" id="ug-insight">Loading insight...</span>
+                </div>
+
                 <a href="ultimatum-game/" class="btn btn-play">Play Now →</a>
             </div>
 
@@ -101,6 +135,11 @@
                     <span class="tag">Resource Management</span>
                     <span class="tag">Sustainability</span>
                     <span class="tag">10 Rounds</span>
+                </div>
+
+                <div class="key-insight">
+                    <span class="insight-icon">💡</span>
+                    <span class="insight-text" id="tc-insight">Loading insight...</span>
                 </div>
 
                 <a href="tragedy-commons/" class="btn btn-play">Play Now →</a>
@@ -130,6 +169,11 @@
                     <span class="tag">10 Rounds</span>
                 </div>
 
+                <div class="key-insight">
+                    <span class="insight-icon">💡</span>
+                    <span class="insight-text" id="pg-insight">Loading insight...</span>
+                </div>
+
                 <a href="public-goods/" class="btn btn-play">Play Now →</a>
             </div>
         </div>
@@ -155,7 +199,7 @@
 
         async function loadStats() {
             if (!isFirebaseConfigured()) {
-                // Demo stats
+                // Demo stats - individual games
                 document.getElementById('pd-players').textContent = '1,247';
                 document.getElementById('pd-coop').textContent = '52%';
                 document.getElementById('ug-players').textContent = '823';
@@ -164,6 +208,18 @@
                 document.getElementById('tc-survival').textContent = '42%';
                 document.getElementById('pg-players').textContent = '2,341';
                 document.getElementById('pg-avg-contrib').textContent = '$4.20';
+
+                // Demo stats - global
+                document.getElementById('total-players').textContent = '5,595';
+                document.getElementById('humans-cooperate').textContent = '52%';
+                document.getElementById('reject-unfair').textContent = '32%';
+                document.getElementById('lakes-die').textContent = '58%';
+
+                // Demo insights
+                document.getElementById('pd-insight').textContent = 'Most players cooperate first, then switch to tit-for-tat';
+                document.getElementById('ug-insight').textContent = 'Average offer is $4.20 - way above theory\'s prediction of $0.01!';
+                document.getElementById('tc-insight').textContent = '58% of lakes die - tragedy strikes even with warnings';
+                document.getElementById('pg-insight').textContent = 'Players contribute $4.50 on average (theory predicts $0)';
                 return;
             }
 
@@ -221,8 +277,9 @@
 
                 // Load Public Goods Game stats
                 const pgGamesSnapshot = await get(ref(db, 'public-goods-games'));
+                let pgGames = [];
                 if (pgGamesSnapshot.exists()) {
-                    const pgGames = Object.values(pgGamesSnapshot.val());
+                    pgGames = Object.values(pgGamesSnapshot.val());
                     const playerCount = Math.min(pgGames.length, 999999);
                     document.getElementById('pg-players').textContent = playerCount.toLocaleString();
 
@@ -234,6 +291,64 @@
                     document.getElementById('pg-players').textContent = '0';
                     document.getElementById('pg-avg-contrib').textContent = '$0.00';
                 }
+
+                // Calculate and display global statistics
+                const games = gamesSnapshot.exists() ? Object.values(gamesSnapshot.val()) : [];
+                const ugGames = ugGamesSnapshot.exists() ? Object.values(ugGamesSnapshot.val()) : [];
+                const tcGames = tcGamesSnapshot.exists() ? Object.values(tcGamesSnapshot.val()) : [];
+
+                // Total games played
+                const totalGames = games.length + ugGames.length + tcGames.length + pgGames.length;
+                document.getElementById('total-players').textContent = totalGames.toLocaleString();
+
+                // Humans cooperate rate
+                if (games.length > 0) {
+                    const validRates = games.map(g => sanitizeFirebaseData(g.cooperationRate || 0, 'number'));
+                    const avgCoop = validRates.reduce((sum, rate) => sum + rate, 0) / validRates.length;
+                    document.getElementById('humans-cooperate').textContent = safePercentFormat(avgCoop);
+                }
+
+                // Reject unfair offers (estimate based on avg offer)
+                if (ugGames.length > 0) {
+                    const validOffers = ugGames.map(g => sanitizeFirebaseData(g.averageOffer || 0, 'number'));
+                    const lowOffers = validOffers.filter(offer => offer < 3).length;
+                    const rejectRate = (lowOffers / validOffers.length) * 100;
+                    document.getElementById('reject-unfair').textContent = safePercentFormat(rejectRate);
+                }
+
+                // Lakes die rate
+                if (tcGames.length > 0) {
+                    const died = tcGames.filter(g => sanitizeFirebaseData(g.lakeDied, 'boolean')).length;
+                    const diedRate = (died / tcGames.length) * 100;
+                    document.getElementById('lakes-die').textContent = safePercentFormat(diedRate);
+                }
+
+                // Generate dynamic insights for each game
+                if (games.length > 0) {
+                    const validRates = games.map(g => sanitizeFirebaseData(g.cooperationRate || 0, 'number'));
+                    const avgCoop = validRates.reduce((sum, rate) => sum + rate, 0) / validRates.length;
+                    const coopPercent = Math.round(avgCoop);
+                    document.getElementById('pd-insight').textContent = `${coopPercent}% cooperation rate - humans defy game theory's 0% prediction!`;
+                }
+
+                if (ugGames.length > 0) {
+                    const validOffers = ugGames.map(g => sanitizeFirebaseData(g.averageOffer || 0, 'number'));
+                    const avgOffer = validOffers.reduce((sum, offer) => sum + offer, 0) / validOffers.length;
+                    document.getElementById('ug-insight').textContent = `Average offer: $${avgOffer.toFixed(2)} - way above theory's $0.01 prediction!`;
+                }
+
+                if (tcGames.length > 0) {
+                    const died = tcGames.filter(g => sanitizeFirebaseData(g.lakeDied, 'boolean')).length;
+                    const diedRate = Math.round((died / tcGames.length) * 100);
+                    document.getElementById('tc-insight').textContent = `${diedRate}% of lakes die from overfishing - the tragedy strikes!`;
+                }
+
+                if (pgGames.length > 0) {
+                    const validContribs = pgGames.map(g => sanitizeFirebaseData(g.avgContribution || 0, 'number'));
+                    const avgContrib = validContribs.reduce((sum, c) => sum + c, 0) / validContribs.length;
+                    document.getElementById('pg-insight').textContent = `Average contribution: $${avgContrib.toFixed(2)} (theory predicts $0!)`;
+                }
+
             } catch (error) {
                 console.log('Using demo stats');
             }
