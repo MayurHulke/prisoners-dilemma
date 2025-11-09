@@ -87,11 +87,10 @@ Contribute to the public fund or free-ride? See why Wikipedia needs donation dri
 
 ## Features
 
-- **Retro Arcade Aesthetic** - Pixel fonts, CRT effects, neon glows
-- **Real Human Data** - Compare your choices to actual players
-- **Interactive Insights** - Charts showing cooperation patterns
-- **Social Comparison** - Percentiles, rankings, and archetypes
-- **Firebase Integration** - Live crowd statistics (free tier)
+- [x] **Real Human Data** - Compare your choices to actual players
+- [x] **Interactive Insights** - Charts showing cooperation patterns
+- [x] **Social Comparison** - Percentiles, rankings, and archetypes
+- [x] **Firebase Integration** - Live crowd statistics
 
 ## License
 
