@@ -765,6 +765,25 @@ input[type="number"] {
     margin-bottom: 0;
 }
 
+/* How to Play Box */
+.how-to-play-box {
+    background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(0, 217, 255, 0.1) 100%);
+    border-color: var(--success-color);
+}
+
+.how-to-play-box h3 {
+    color: var(--success-color);
+}
+
+.how-to-play-box ol li {
+    font-size: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.how-to-play-box ol li:last-child {
+    margin-bottom: 0;
+}
+
 /* Punishment View */
 .punishment-view,
 .punishment-results-view {
