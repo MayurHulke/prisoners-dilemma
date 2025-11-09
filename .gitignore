@@ -10,3 +10,7 @@
 
 # Logs
 *.log
+
+# Documentation (except README)
+*.md
+!README.md
