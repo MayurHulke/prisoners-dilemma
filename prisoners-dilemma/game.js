@@ -1,5 +1,109 @@
 import { firebaseConfig, isFirebaseConfigured } from '../shared/firebase-config.js';
 
+// Opponent Strategies (based on 2024 research)
+const OPPONENT_STRATEGIES = {
+    'tit-for-tat': {
+        name: 'Tit-for-Tat',
+        emoji: '🔄',
+        description: 'Mirrors your previous move. Classic reciprocal strategy.',
+        decide: (gameState, partnerChoices) => {
+            if (gameState.currentRound === 1) return 'cooperate';
+            // Mirror player's last choice
+            return gameState.choices[gameState.currentRound - 2];
+        }
+    },
+    'generous-tft': {
+        name: 'Generous Tit-for-Tat',
+        emoji: '😊',
+        description: 'Like Tit-for-Tat but occasionally forgives defections.',
+        decide: (gameState, partnerChoices) => {
+            if (gameState.currentRound === 1) return 'cooperate';
+            const lastPlayerChoice = gameState.choices[gameState.currentRound - 2];
+            // If player defected, forgive 30% of the time
+            if (lastPlayerChoice === 'defect' && Math.random() < 0.3) {
+                return 'cooperate';
+            }
+            return lastPlayerChoice;
+        }
+    },
+    'win-stay-lose-shift': {
+        name: 'Win-Stay-Lose-Shift',
+        emoji: '🎲',
+        description: 'Repeats successful moves, changes after bad outcomes.',
+        decide: (gameState, partnerChoices) => {
+            if (gameState.currentRound === 1) return 'cooperate';
+            const lastOpponentChoice = partnerChoices[partnerChoices.length - 1];
+            const lastPlayerChoice = gameState.choices[gameState.currentRound - 2];
+
+            // If last round was mutual cooperation or I defected while they cooperated (I won), stay
+            if ((lastOpponentChoice === 'cooperate' && lastPlayerChoice === 'cooperate') ||
+                (lastOpponentChoice === 'cooperate' && lastPlayerChoice === 'defect')) {
+                return lastOpponentChoice;
+            }
+            // Otherwise shift
+            return lastOpponentChoice === 'cooperate' ? 'defect' : 'cooperate';
+        }
+    },
+    'pavlov': {
+        name: 'Pavlov',
+        emoji: '🧠',
+        description: 'Cooperates after mutual cooperation or mutual defection.',
+        decide: (gameState, partnerChoices) => {
+            if (gameState.currentRound === 1) return 'cooperate';
+            const lastOpponentChoice = partnerChoices[partnerChoices.length - 1];
+            const lastPlayerChoice = gameState.choices[gameState.currentRound - 2];
+
+            // Cooperate if both did the same thing last round
+            if (lastOpponentChoice === lastPlayerChoice) {
+                return 'cooperate';
+            }
+            return 'defect';
+        }
+    },
+    'always-defect': {
+        name: 'Always Defect',
+        emoji: '⚔️',
+        description: 'Pure selfishness. Always defects.',
+        decide: (gameState, partnerChoices) => {
+            return 'defect';
+        }
+    },
+    'gradual': {
+        name: 'Gradual',
+        emoji: '📈',
+        description: 'Escalates retaliation gradually, then offers forgiveness.',
+        decide: (gameState, partnerChoices) => {
+            if (gameState.currentRound === 1) return 'cooperate';
+
+            // Count how many times player defected
+            const playerDefections = gameState.choices.filter(c => c === 'defect').length;
+            const lastPlayerChoice = gameState.choices[gameState.currentRound - 2];
+
+            // If player just defected, retaliate equal to number of their defections
+            if (lastPlayerChoice === 'defect') {
+                // Retaliate for N rounds (where N = their total defections)
+                const roundsSinceLastDefection = gameState.currentRound - 1 -
+                    gameState.choices.lastIndexOf('defect');
+
+                if (roundsSinceLastDefection <= playerDefections) {
+                    return 'defect';
+                }
+            }
+
+            // Otherwise cooperate
+            return 'cooperate';
+        }
+    },
+    'random': {
+        name: 'Random',
+        emoji: '🎰',
+        description: 'Unpredictable. Makes random choices.',
+        decide: (gameState, partnerChoices) => {
+            return Math.random() < 0.5 ? 'cooperate' : 'defect';
+        }
+    }
+};
+
 // Game State
 const gameState = {
     playerName: 'Anonymous',
@@ -8,7 +112,8 @@ const gameState = {
     totalYears: 0,
     choices: [],
     sessionId: generateSessionId(),
-    partnerChoices: [] // Pre-generated for consistency
+    partnerChoices: [], // Pre-generated for consistency
+    opponentStrategy: null // Selected at game start
 };
 
 // Firebase variables (will be initialized if configured)
@@ -82,22 +187,22 @@ function generateSessionId() {
     return `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-// Generate partner choices (simulated opponent using Tit-for-Tat with some randomness)
-function generatePartnerChoices() {
-    const choices = ['cooperate']; // Start with cooperation
+// Update opponent strategy display
+function updateOpponentDisplay() {
+    const strategy = OPPONENT_STRATEGIES[gameState.opponentStrategy];
+    const opponentInfo = document.getElementById('opponent-strategy-info');
 
-    for (let i = 1; i < gameState.maxRounds; i++) {
-        // 70% Tit-for-Tat, 30% random
-        if (Math.random() < 0.7 && gameState.choices[i - 1]) {
-            // Mirror player's previous choice
-            choices.push(gameState.choices[i - 1]);
-        } else {
-            // Random with slight bias toward cooperation (60/40)
-            choices.push(Math.random() < 0.6 ? 'cooperate' : 'defect');
-        }
+    if (opponentInfo) {
+        opponentInfo.innerHTML = `
+            <div class="opponent-strategy">
+                <span class="strategy-emoji">${strategy.emoji}</span>
+                <div class="strategy-details">
+                    <div class="strategy-name">${strategy.name}</div>
+                    <div class="strategy-description">${strategy.description}</div>
+                </div>
+            </div>
+        `;
     }
-
-    return choices;
 }
 
 // Save game data to Firebase
@@ -301,31 +406,28 @@ function startGame() {
     gameState.currentRound = 1;
     gameState.totalYears = 0;
     gameState.choices = [];
+    gameState.partnerChoices = [];
     gameState.sessionId = generateSessionId();
+
+    // Select random opponent strategy
+    const strategyKeys = Object.keys(OPPONENT_STRATEGIES);
+    const randomKey = strategyKeys[Math.floor(Math.random() * strategyKeys.length)];
+    gameState.opponentStrategy = randomKey;
 
     welcomeScreen.style.display = 'none';
     gameScreen.style.display = 'block';
 
     updateGameUI();
+    updateOpponentDisplay();
 }
 
 // Make choice
 async function makeChoice(choice) {
     gameState.choices.push(choice);
 
-    // Generate partner choice (dynamic based on player history)
-    let partnerChoice;
-    if (gameState.currentRound === 1) {
-        // First round: partner cooperates
-        partnerChoice = 'cooperate';
-    } else {
-        // Tit-for-tat with 20% randomness
-        if (Math.random() < 0.8) {
-            partnerChoice = gameState.choices[gameState.currentRound - 2];
-        } else {
-            partnerChoice = Math.random() < 0.55 ? 'cooperate' : 'defect';
-        }
-    }
+    // Generate partner choice using selected strategy
+    const strategy = OPPONENT_STRATEGIES[gameState.opponentStrategy];
+    const partnerChoice = strategy.decide(gameState, gameState.partnerChoices);
 
     gameState.partnerChoices.push(partnerChoice);
 
