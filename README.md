@@ -5,7 +5,7 @@
 **Learn game theory through interactive play!**
 
 <p align="center">
-  <img src="prisoners-dilemma/images/rick-morty.png" alt="Classic Prisoner's Dilemma" width="400">
+  <img src="images/arcade-hub.png" alt="Game Theory Arcade Hub" width="800">
 </p>
 
 ## Purpose
